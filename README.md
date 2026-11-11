@@ -156,11 +156,11 @@ order by abs(change_pct) desc nulls last limit 20;
 
 | Airflow DAG | dbt lineage graph |
 |---|---|
-| ![Airflow](docs/images/airflow-dag.png) | ![Lineage](docs/images/dbt-lineage.png) |
+| ![Airflow](png\DAG.png) | ![Lineage](docs/images/dbt-lineage.png) |
 
 | Metabase dashboard | dbt tests passing |
 |---|---|
-| ![Dashboard](docs/images/metabase-dashboard.png) | ![Tests](docs/images/dbt-tests.png) |
+| ![Dashboard](docs/images/metabase-dashboard.png) | ![Tests](png\dbt-docs.png) |
 
 ## Stopping
 
