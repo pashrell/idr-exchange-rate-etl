@@ -1,0 +1,44 @@
+version: 2
+models:
+  - name: fct_exchange_rates
+    description: >
+      Fact table kurs harian terhadap IDR beserta perubahan harian dan moving
+      average 7 hari. Model **incremental** (delete+insert): run biasa hanya menulis
+      ulang 7 hari terakhir; `--full-refresh` membangun ulang dari awal.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [rate_date, base_currency]
+    columns:
+      - name: rate_date
+        description: Tanggal kurs (bagian dari unique key).
+        data_tests: [not_null]
+      - name: base_currency
+        description: Mata uang asal (bagian dari unique key).
+        data_tests: [not_null]
+      - name: idr_rate
+        description: Nilai 1 unit mata uang asal dalam IDR.
+        data_tests: [not_null]
+      - name: change_abs
+        description: Selisih kurs terhadap hari kerja sebelumnya (NULL pada hari pertama).
+      - name: change_pct
+        description: Perubahan persentase terhadap hari kerja sebelumnya.
+      - name: moving_avg_7d
+        description: Rata-rata kurs 7 hari kerja terakhir (termasuk hari ini).
+
+  - name: weekly_volatility
+    description: Ringkasan mingguan per mata uang - rata-rata, minimum, maksimum, dan standar deviasi kurs.
+    columns:
+      - name: week_start
+        description: Tanggal Senin awal minggu.
+        data_tests: [not_null]
+      - name: base_currency
+        description: Mata uang asal.
+        data_tests: [not_null]
+      - name: avg_rate
+        description: Rata-rata kurs dalam minggu tersebut.
+      - name: min_rate
+        description: Kurs terendah dalam minggu tersebut.
+      - name: max_rate
+        description: Kurs tertinggi dalam minggu tersebut.
+      - name: volatility
+        description: Standar deviasi kurs dalam minggu tersebut (proxy volatilitas).

@@ -1,0 +1,70 @@
+# Nilai kredensial dibaca dari file .env (lihat .env.example); default = admin/admin/warehouse.
+x-pg-env: &pg-env
+  POSTGRES_USER: ${POSTGRES_USER:-admin}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin}
+  POSTGRES_DB: ${POSTGRES_DB:-warehouse}
+
+services:
+  postgres:
+    image: postgres:15
+    environment: *pg-env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    ports: ["5432:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      retries: 10
+
+  airflow:
+    build: .
+    depends_on:
+      postgres: { condition: service_healthy }
+    command: standalone
+    environment:
+      <<: *pg-env
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER:-admin}:${POSTGRES_PASSWORD:-admin}@postgres/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW_CONN_WAREHOUSE: postgresql://${POSTGRES_USER:-admin}:${POSTGRES_PASSWORD:-admin}@postgres:5432/${POSTGRES_DB:-warehouse}
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./dbt_project:/opt/airflow/dbt_project
+    ports: ["8080:8080"]
+
+  metabase:
+    image: metabase/metabase:latest
+    depends_on:
+      postgres: { condition: service_healthy }
+    environment:
+      # Metadata Metabase (akun, dashboard) disimpan di file H2 pada volume
+      MB_DB_FILE: /metabase-data/metabase.db
+      JAVA_OPTS: "-Xmx1g"
+    volumes:
+      - metabase-data:/metabase-data
+    ports: ["3000:3000"]
+
+  # Dokumentasi dbt (lineage graph). Dijalankan sesuai kebutuhan:
+  #   docker compose --profile docs up dbt-docs      ->  http://localhost:8081
+  dbt-docs:
+    build: .
+    profiles: ["docs"]
+    depends_on:
+      postgres: { condition: service_healthy }
+    environment: *pg-env
+    volumes:
+      - ./dbt_project:/opt/airflow/dbt_project
+    ports: ["8081:8081"]
+    command:
+      - bash
+      - -c
+      - >-
+        rm -rf /tmp/dbt_project && cp -r /opt/airflow/dbt_project /tmp/dbt_project
+        && cd /tmp/dbt_project
+        && /opt/airflow/dbt_venv/bin/dbt deps --profiles-dir .
+        && /opt/airflow/dbt_venv/bin/dbt docs generate --profiles-dir .
+        && /opt/airflow/dbt_venv/bin/dbt docs serve --host 0.0.0.0 --port 8081 --no-browser --profiles-dir .
+
+volumes:
+  pgdata:
+  metabase-data:

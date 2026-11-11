@@ -1,0 +1,24 @@
+version: 2
+models:
+  - name: stg_exchange_rates
+    description: >
+      Layer staging: memilih kolom, mengganti nama, dan membuang kurs tidak valid
+      (rate <= 0) dari tabel raw. Berupa view.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [rate_date, base_currency]
+    columns:
+      - name: rate_date
+        description: Tanggal kurs.
+        data_tests: [not_null]
+      - name: base_currency
+        description: Mata uang asal.
+        data_tests:
+          - not_null
+          - accepted_values:
+              values: ["USD", "EUR", "SGD", "JPY", "AUD", "CNY"]
+      - name: idr_rate
+        description: Nilai 1 unit mata uang asal dalam IDR.
+        data_tests: [not_null]
+      - name: loaded_at
+        description: Waktu data dimuat ke raw.

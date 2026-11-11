@@ -1,0 +1,13 @@
+name: kurs
+version: "1.0.0"
+config-version: 2
+profile: kurs
+
+model-paths: ["models"]
+
+models:
+  kurs:
+    staging:
+      +materialized: view
+    marts:
+      +materialized: table

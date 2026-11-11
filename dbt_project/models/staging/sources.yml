@@ -1,0 +1,22 @@
+version: 2
+sources:
+  - name: raw
+    description: Data mentah hasil extract dari Frankfurter API, di-load oleh Airflow.
+    schema: raw
+    tables:
+      - name: exchange_rates
+        description: Satu baris per tanggal dan mata uang (upsert idempoten).
+        loaded_at_field: loaded_at
+        freshness:
+          warn_after: { count: 4, period: day }   # toleransi akhir pekan/libur
+        columns:
+          - name: rate_date
+            description: Tanggal kurs (hari kerja ECB).
+          - name: base_currency
+            description: Kode mata uang asal (USD, EUR, SGD, JPY, AUD, CNY).
+          - name: target_currency
+            description: Mata uang tujuan, selalu IDR.
+          - name: rate
+            description: Nilai 1 unit mata uang asal dalam IDR.
+          - name: loaded_at
+            description: Waktu baris pertama kali dimuat ke warehouse.

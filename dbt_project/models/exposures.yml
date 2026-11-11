@@ -1,0 +1,13 @@
+version: 2
+exposures:
+  - name: kurs_rupiah_dashboard
+    label: Kurs Rupiah Dashboard (Metabase)
+    type: dashboard
+    maturity: medium
+    url: http://localhost:3000
+    description: Dashboard tren kurs, moving average, dan volatilitas mingguan.
+    depends_on:
+      - ref('fct_exchange_rates')
+      - ref('weekly_volatility')
+    owner:
+      name: Data Engineering Portfolio

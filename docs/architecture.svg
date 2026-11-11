@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1135 300" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+  </defs>
+  <rect width="1135" height="300" fill="#ffffff"/>
+  <text x="20" y="36" font-size="20" font-weight="700" fill="#0f172a">ELT Pipeline: IDR Exchange Rates</text>
+
+  <rect x="195" y="62" width="925" height="215" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-dasharray="7 5"/>
+  <text x="1108" y="84" font-size="12" fill="#64748b" text-anchor="end">Docker Compose</text>
+
+  <g stroke-width="1.5" font-size="15" font-weight="600" text-anchor="middle">
+    <rect x="20"  y="110" width="150" height="80" rx="10" fill="#e2e8f0" stroke="#64748b"/>
+    <rect x="205" y="110" width="150" height="80" rx="10" fill="#cffafe" stroke="#0891b2"/>
+    <rect x="390" y="110" width="150" height="80" rx="10" fill="#dbeafe" stroke="#2563eb"/>
+    <rect x="575" y="110" width="150" height="80" rx="10" fill="#ffedd5" stroke="#ea580c"/>
+    <rect x="760" y="110" width="150" height="80" rx="10" fill="#dbeafe" stroke="#2563eb"/>
+    <rect x="945" y="110" width="150" height="80" rx="10" fill="#dcfce7" stroke="#16a34a"/>
+    <g fill="#0f172a">
+      <text x="95"  y="146">Frankfurter API</text>
+      <text x="280" y="146">Apache Airflow</text>
+      <text x="465" y="146">PostgreSQL</text>
+      <text x="650" y="146">dbt</text>
+      <text x="835" y="146">PostgreSQL</text>
+      <text x="1020" y="146">Metabase</text>
+    </g>
+    <g font-size="12" font-weight="400" fill="#334155">
+      <text x="95"  y="168">ECB exchange rates</text>
+      <text x="280" y="168">extract + load</text>
+      <text x="465" y="168">schema: raw</text>
+      <text x="650" y="168">staging → marts</text>
+      <text x="835" y="168">schema: analytics</text>
+      <text x="1020" y="168">dashboards</text>
+    </g>
+  </g>
+
+  <g stroke="#475569" stroke-width="2" marker-end="url(#arr)">
+    <line x1="170" y1="150" x2="203" y2="150"/>
+    <line x1="355" y1="150" x2="388" y2="150"/>
+    <line x1="540" y1="150" x2="573" y2="150"/>
+    <line x1="725" y1="150" x2="758" y2="150"/>
+    <line x1="910" y1="150" x2="943" y2="150"/>
+  </g>
+  <!-- Airflow memicu dbt -->
+  <path d="M280 110 C280 80, 650 80, 650 108" fill="none" stroke="#0891b2" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arr)"/>
+  <text x="465" y="76" font-size="12" fill="#0e7490" text-anchor="middle">triggers dbt run / test</text>
+
+  <g font-size="12" fill="#475569" text-anchor="middle">
+    <text x="95"  y="222">REST / JSON</text>
+    <text x="280" y="222">6 currencies · dynamic</text>
+    <text x="280" y="238">task mapping · upsert</text>
+    <text x="465" y="222">idempotent raw table</text>
+    <text x="650" y="222">incremental model</text>
+    <text x="650" y="238">+ data tests</text>
+    <text x="835" y="222">fct + weekly marts</text>
+    <text x="1020" y="222">BI / visualization</text>
+  </g>
+</svg>
